@@ -53,7 +53,8 @@ export const scrapInternshala = async (
     // Open a new page
     console.log("Opening internshala jobs page...");
 
-    if (filter && filter?.length) {
+    if (filter && filter?.length && filter !== "undefined") {
+      console.log(filter, "here filter");
       await page.goto(`https://internshala.com/internships/${filter}`, {
         waitUntil: "networkidle2",
       });

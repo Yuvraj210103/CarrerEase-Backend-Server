@@ -53,7 +53,8 @@ export const scrapNaukri = async (
     // Open a new page
     console.log("Opening naukri jobs page...");
 
-    if (filter && filter?.length) {
+    if (filter && filter?.length && filter !== "undefined") {
+      console.log(filter, "here");
       await page.goto(`https://www.naukri.com/${filter}`, {
         waitUntil: "networkidle2",
       });
