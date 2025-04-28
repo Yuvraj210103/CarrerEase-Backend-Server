@@ -1,7 +1,7 @@
 import express, { Express } from "express";
-import internShalaRouter from "./src/modules/internshala/internshala.router";
 import bodyParser from "body-parser";
 import cors from "cors";
+import api from "./src/api/index.api";
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
   res.send("Hello, TypeScript Node Express!");
 });
 
-app.use("/apply/internshala", internShalaRouter);
+app.use("/api/", api);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
