@@ -3,6 +3,7 @@ import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import AnonymizeUAPlugin from "puppeteer-extra-plugin-anonymize-ua";
 import { IJobs } from "../../../interface/job";
+import { PuppeteerConfig } from "../../../contsants/PuppeteerConfig";
 
 puppeteer.use(StealthPlugin());
 puppeteer.use(
@@ -35,6 +36,8 @@ export const scrapInternshala = async (
     });
 
     const page = await browser.newPage();
+
+    page.setDefaultTimeout(PuppeteerConfig.TIMEOUT);
 
     // Fix navigator.webdriver
     await page.evaluateOnNewDocument(() => {
