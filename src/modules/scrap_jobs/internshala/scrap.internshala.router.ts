@@ -3,6 +3,6 @@ import * as scrapInternshalaController from "./scrap.internshala.controller";
 
 const scrapInternshalaRouter = Router();
 
-scrapInternshalaRouter.post("/", scrapInternshalaController.scrapInternshala);
+scrapInternshalaRouter.get("/", scrapInternshalaController.scrapInternshala);
 
 export default scrapInternshalaRouter;
