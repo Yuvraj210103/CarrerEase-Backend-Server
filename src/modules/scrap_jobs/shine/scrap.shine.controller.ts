@@ -36,11 +36,11 @@ export const scrapShine = async (
 
     if (filter && filter?.length && filter !== "undefined") {
       console.log(filter, "here filter");
-      await page.goto(`https://www.shine.com/job-search/${filter}`, {
+      await page.goto(`https://www.shine.com/${filter}`, {
         waitUntil: "networkidle2",
       });
     } else {
-      await page.goto("https://www.shine.com/job-search/new", {
+      await page.goto("https://www.shine.com/job-search/jobs", {
         waitUntil: "networkidle2",
       });
     }
