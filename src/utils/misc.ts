@@ -1,4 +1,4 @@
-import { Page } from "puppeteer";
+import { Browser, Page } from "puppeteer-core";
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import AnonymizeUAPlugin from "puppeteer-extra-plugin-anonymize-ua";
@@ -20,20 +20,28 @@ puppeteer.use(
 );
 
 export const openBrowser = async () => {
-  const browser = await puppeteer.launch({
-    headless: true,
-    defaultViewport: null,
-    args: [
-      "--start-maximized",
-      "--disable-blink-features=AutomationControlled",
-      "--disable-infobars", // <- remove 'controlled by automated test software' banner
-      "--no-sandbox",
-      "--disable-setuid-sandbox",
-      "--disable-dev-shm-usage",
-      "--disable-gpu",
-      "--disable-features=IsolateOrigins,site-per-process",
-    ],
-  });
+  if (process.env.MODE === "dev") {
+    const browser: Browser = await puppeteer.launch({
+      headless: true,
+      defaultViewport: null,
+      args: [
+        "--start-maximized",
+        "--disable-blink-features=AutomationControlled",
+        "--disable-infobars", // <- remove 'controlled by automated test software' banner
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-dev-shm-usage",
+        "--disable-gpu",
+        "--disable-features=IsolateOrigins,site-per-process",
+      ],
+    });
 
-  return browser;
+    return browser;
+  } else {
+    const browser: Browser = await puppeteer.connect({
+      browserWSEndpoint: process.env.BROWSER_WS_ENDPOINT,
+    });
+
+    return browser;
+  }
 };

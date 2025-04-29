@@ -1,17 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import puppeteer from "puppeteer-extra";
-import StealthPlugin from "puppeteer-extra-plugin-stealth";
-import AnonymizeUAPlugin from "puppeteer-extra-plugin-anonymize-ua";
 import { IJobs } from "../../../interface/job";
 import { PuppeteerConfig } from "../../../contsants/PuppeteerConfig";
 import { openBrowser } from "../../../utils/misc";
-
-puppeteer.use(StealthPlugin());
-puppeteer.use(
-  AnonymizeUAPlugin({
-    customFn: (ua) => ua.replace("HeadlessChrome/", "Chrome/"),
-  })
-);
 
 export const scrapNaukri = async (
   req: Request,

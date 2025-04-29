@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { htmlToPdfSchema } from "./pdf.schema";
-import puppeteer from "puppeteer";
 import { compressAndConvertImages } from "./pdf.utils";
 import { PuppeteerConfig } from "../../contsants/PuppeteerConfig";
+import { openBrowser } from "../../utils/misc";
 
 export const htmlToPdf = async (
   req: Request,
@@ -23,10 +23,7 @@ export const htmlToPdf = async (
 
     const formattedHtml = await compressAndConvertImages(html);
 
-    browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--disable-dev-shm-usage"],
-      headless: true,
-    });
+    browser = await openBrowser();
 
     const page = await browser.newPage();
 
