@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { htmlToPdfSchema } from "./pdf.schema";
 import puppeteer from "puppeteer";
 import { compressAndConvertImages } from "./pdf.utils";
+import { PuppeteerConfig } from "../../contsants/PuppeteerConfig";
 
 export const htmlToPdf = async (
   req: Request,
@@ -9,9 +10,6 @@ export const htmlToPdf = async (
   next: NextFunction
 ) => {
   let browser;
-
-  // Set timeout to 5 minutes
-  const timeout = 5 * 60 * 1000;
 
   try {
     const result = await htmlToPdfSchema.safeParseAsync(req.body);
@@ -32,7 +30,7 @@ export const htmlToPdf = async (
 
     const page = await browser.newPage();
 
-    page.setDefaultTimeout(timeout);
+    page.setDefaultTimeout(PuppeteerConfig.TIMEOUT);
 
     await page.setContent(formattedHtml, {
       waitUntil: "networkidle0",
