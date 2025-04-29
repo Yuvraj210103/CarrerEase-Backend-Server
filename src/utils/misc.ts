@@ -1,4 +1,4 @@
-import { Browser, Page } from "puppeteer-core";
+import { Browser, executablePath, Page } from "puppeteer-core";
 import puppeteer from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import AnonymizeUAPlugin from "puppeteer-extra-plugin-anonymize-ua";
@@ -20,8 +20,11 @@ puppeteer.use(
 );
 
 export const openBrowser = async () => {
+  console.log(process.env.MODE, "here");
   if (process.env.MODE === "dev") {
     const browser: Browser = await puppeteer.launch({
+      executablePath:
+        "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe",
       headless: true,
       defaultViewport: null,
       args: [

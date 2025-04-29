@@ -2,6 +2,9 @@ import express, { Express } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import api from "./src/api/index.api";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
