@@ -119,6 +119,8 @@ export const scrapNaukri = async (
 
     await browser.close();
 
+    console.log("Scrapped Naukri jobs successfully");
+
     res.status(200).json({
       message: "Scraped Naukri jobs successfully",
       data: jobs.filter((res) => res.JobTitle && res.JobUrl),

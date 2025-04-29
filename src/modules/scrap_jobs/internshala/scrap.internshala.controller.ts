@@ -134,6 +134,8 @@ export const scrapInternshala = async (
 
     await browser.close();
 
+    console.log("Scrapped internshala jobs successfully");
+
     res.status(200).json({
       message: "Scrapped internshala jobs successfully",
       data: internships.filter((res) => res.JobTitle && res.JobUrl),

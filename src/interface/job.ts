@@ -7,7 +7,7 @@ export interface IJobs {
   JobSalary: string;
   JobStatus: "Open" | "Closed";
   JobUrl: string;
-  JobPlatform: "Internshala" | "Naukri";
+  JobPlatform: "Internshala" | "Naukri" | "Indeed";
   JobPostedAt?: string;
   JobScrapedAt: Date;
 }
