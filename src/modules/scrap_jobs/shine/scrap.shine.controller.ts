@@ -3,7 +3,7 @@ import { IJobs } from "../../../interface/job";
 import { PuppeteerConfig } from "../../../contsants/PuppeteerConfig";
 import { openBrowser } from "../../../utils/misc";
 
-export const scrapIndeed = async (
+export const scrapShine = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -32,15 +32,15 @@ export const scrapIndeed = async (
     );
 
     // Open a new page
-    console.log("Opening indeed jobs page...");
+    console.log("Opening shine jobs page...");
 
     if (filter && filter?.length && filter !== "undefined") {
       console.log(filter, "here filter");
-      await page.goto(`https://in.indeed.com/${filter}`, {
+      await page.goto(`https://www.shine.com/job-search/${filter}`, {
         waitUntil: "networkidle2",
       });
     } else {
-      await page.goto("https://in.indeed.com/jobs", {
+      await page.goto("https://www.shine.com/job-search/new", {
         waitUntil: "networkidle2",
       });
     }
@@ -48,40 +48,48 @@ export const scrapIndeed = async (
     // Wait for internship elements to load (specific selector for internship listing)
     console.log("Waiting for jobs listings to load...");
 
-    await page.waitForSelector(".css-1ac2h1w eu4oa1w0", { visible: true });
+    await page.waitForSelector(".jobCardNova_bigCard__W2xn3", {
+      visible: true,
+    });
 
-    const innerHtmlInternships = await page.$eval(
-      "li#css-1ac2h1w eu4oa1w0",
-      (element) => element.innerHTML
-    );
-    console.log(innerHtmlInternships, "here text content");
-
-    return;
     // Extract internship details
-    const jobs = await page.$$eval("li.css-1ac2h1w eu4oa1w0", (jobCards) => {
-      return jobCards
-        .filter((jobCard) => !jobCard.querySelector("[id^='mosaic']")) // Skip mosaic (non-job) entries
-        .map((jobCard) => {
-          const titleElement = jobCard.querySelector("h2.jobTitle span");
-          const companyElement = jobCard.querySelector(".companyName");
-          const locationElement = jobCard.querySelector(".companyLocation");
-          const salaryElement = jobCard.querySelector(".salary-snippet");
-          const descriptionElement = jobCard.querySelector(".job-snippet");
-          const postedDateElement = jobCard.querySelector(".date");
-          const linkElement = jobCard.querySelector("h2.jobTitle a");
+    const jobs = await page.$$eval(
+      ".jobCardNova_bigCard__W2xn3",
+      (jobCards) => {
+        return jobCards.map((jobCard) => {
+          const titleElement = jobCard.querySelector(
+            ".jobCardNova_bigCardTopTitleHeading__Rj2sC a"
+          );
+          const companyElement = jobCard.querySelector(
+            ".jobCardNova_bigCardTopTitleName__M_W_m"
+          );
+          const experienceElement = jobCard.querySelector(
+            ".jobCardNova_bigCardCenterListExp__KTSEc"
+          );
+          const locationElement = jobCard.querySelector(
+            ".jobCardNova_bigCardCenterListLoc__usiPB"
+          );
+          const skillsElement = jobCard.querySelectorAll(
+            ".jobCardNova_skillsLists__7YifX li"
+          );
+          const postedDateElement = jobCard.querySelector(
+            ".jobApplyBtnNova_days__yODJj"
+          );
+          const urlMetaElement = jobCard.querySelector('meta[itemprop="url"]');
+
+          const skills = Array.from(skillsElement || []).map((li) =>
+            li.textContent?.trim()
+          );
 
           const job: IJobs = {
             JobTitle: titleElement?.textContent?.trim() || "",
-            JobDescription:
-              descriptionElement?.textContent?.trim().replace(/\n/g, " ") || "",
+            JobDescription: skills.join(", "), // Shine doesn't have a full description on listing
             JobCompany: companyElement?.textContent?.trim() || "",
-            JobDuration: "", // Indeed usually doesn't show experience required directly
-            JobSalary: salaryElement?.textContent?.trim() || "Not disclosed",
+            JobDuration: experienceElement?.textContent?.trim() || "", // Experience
+            JobSalary: "", // Not shown on listing page
             JobLocation: locationElement?.textContent?.trim() || "",
-            JobUrl: linkElement?.getAttribute("href")
-              ? `https://in.indeed.com${linkElement.getAttribute("href")}`
-              : "",
-            JobPlatform: "Indeed",
+            JobUrl: urlMetaElement?.getAttribute("content") || "",
+            JobPlatform: "Shine",
             JobPostedAt: postedDateElement?.textContent?.trim() || "",
             JobStatus: "Open",
             JobScrapedAt: new Date(),
@@ -89,14 +97,15 @@ export const scrapIndeed = async (
 
           return job;
         });
-    });
+      }
+    );
 
     await browser.close();
 
-    console.log("Scrapped indeed jobs successfully");
+    console.log("Scrapped shine jobs successfully");
 
     res.status(200).json({
-      message: "Scrapped indeed jobs successfully",
+      message: "Scrapped shine jobs successfully",
       data: jobs.filter((res) => res.JobTitle && res.JobUrl),
     });
   } catch (error) {

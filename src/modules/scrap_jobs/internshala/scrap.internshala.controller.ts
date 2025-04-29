@@ -4,6 +4,7 @@ import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import AnonymizeUAPlugin from "puppeteer-extra-plugin-anonymize-ua";
 import { IJobs } from "../../../interface/job";
 import { PuppeteerConfig } from "../../../contsants/PuppeteerConfig";
+import { openBrowser } from "../../../utils/misc";
 
 puppeteer.use(StealthPlugin());
 puppeteer.use(
@@ -20,20 +21,7 @@ export const scrapInternshala = async (
   try {
     // Launch the browser
     const filter = req.query.filter;
-    const browser = await puppeteer.launch({
-      headless: true,
-      defaultViewport: null,
-      args: [
-        "--start-maximized",
-        "--disable-blink-features=AutomationControlled",
-        "--disable-infobars", // <- remove 'controlled by automated test software' banner
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--disable-dev-shm-usage",
-        "--disable-gpu",
-        "--disable-features=IsolateOrigins,site-per-process",
-      ],
-    });
+    const browser = await openBrowser();
 
     const page = await browser.newPage();
 
